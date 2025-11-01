@@ -62,7 +62,7 @@ A forma mais segura de instalar as dependências é usando o arquivo `requiremen
 
 2.  **Instale todas as outras dependências com `pip`:** Este comando instalará todas as bibliotecas Python necessárias de uma só vez.
     ```bash
-    pip install -r requirements.txt
+    pip install -r registro_recognition/requirements.txt
     ```
 
 > **Alternativa (Instalação Manual):** Se preferir instalar manualmente, esteja ciente de que o `pip` pode baixar versões mais recentes dos pacotes que podem causar conflitos.
