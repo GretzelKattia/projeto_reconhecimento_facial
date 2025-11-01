@@ -1,0 +1,165 @@
+/* =============================================
+   ESTILOS ESPECÍFICOS DO DASHBOARD
+   ============================================ */
+
+.dashboard-container {
+    max-width: 800px;
+    margin: 40px auto;
+}
+
+.dashboard-card {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 30px 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-title {
+    color: var(--primary-green);
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+.info-section,
+.facial-data-section {
+    background: var(--white);
+    padding: 0;
+    border-radius: 10px;
+    margin: 20px 0;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+}
+
+.section-header {
+    padding: 15px 20px;
+    color: var(--white);
+}
+
+.info-section .section-header {
+    background-color: var(--primary-green);
+}
+
+.facial-data-section .section-header {
+    background-color: #004085;
+}
+
+.section-content {
+    padding: 20px;
+    background-color: var(--light-gray);
+}
+
+.section-title {
+    color: inherit;
+    margin-bottom: 0;
+    text-align: center;
+    font-size: 22px;
+}
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-label {
+    color: #666;
+    font-size: 12px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.info-value {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.facial-data-title {
+    /* Estilos agora são controlados por .section-title */
+}
+
+.facial-data-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.facial-data-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.facial-data-details {
+    flex: 1;
+}
+
+.encoding-block {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    word-wrap: break-word;
+    background: #e0e7ff;
+    border: 1px solid #c9d5f7;
+    padding: 10px;
+    border-radius: 5px;
+    max-height: 100px;
+    overflow-y: auto;
+
+    /* Esconde a barra de rolagem no Firefox */
+    scrollbar-width: none;
+
+    /* Esconde a barra de rolagem no Internet Explorer e Edge (versões mais antigas) */
+    -ms-overflow-style: none;
+}
+
+/* Esconde a barra de rolagem no Chrome, Safari e outros navegadores WebKit */
+.encoding-block::-webkit-scrollbar {
+    display: none;
+}
+
+.logout-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.logout-btn {
+    flex: 1;
+    text-align: center;
+}
+
+.dashboard-alert {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: #e0e7ff;
+    color: #004085;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    border: 1px solid #c9d5f7;
+}
+
+.dashboard-alert svg {
+    fill: #004085;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.logout-btn:hover {
+    background-color: var(--dark-green);
+    border-color: var(--dark-green);
+}
+
+/* Ajustes para telas menores */
+@media (max-width: 768px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}

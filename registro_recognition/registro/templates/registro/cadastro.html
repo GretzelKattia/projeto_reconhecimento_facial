@@ -1,0 +1,37 @@
+{% extends 'registro/base.html' %}
+{% load static %}
+
+{% block title %}Cadastro - Sistema de Registro{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2 class="form-title">
+        Cadastro de Novo Funcionário
+    </h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <h3 class="form-section-title">Dados de Acesso</h3>
+        {{ user_form.as_p }}
+
+        <h3 class="form-section-title">Dados Pessoais</h3>
+        {{ funcionario_form.as_p }}
+
+        <h3 class="form-section-title">Reconhecimento Facial</h3>
+        {{ coleta_form.as_p }}
+        <!-- <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M19 7v2.99s-1.99.01-2 0V7h-3s.01-1.99 0-2h3V2h2v3h3v2h-3zm-3 4V8h-3V5H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8h-3zM5 19l3-4 2 3 3-4 4 5H5z"/>
+        </svg> -->
+
+        <div class="button-group">
+            <button type="submit" class="btn btn-primary btn-block">
+                Cadastrar
+            </button>
+            <a href="{% url 'login' %}" class="btn btn-secondary btn-block">
+                Voltar para Login
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

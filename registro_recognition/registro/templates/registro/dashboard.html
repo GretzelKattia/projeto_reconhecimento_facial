@@ -1,0 +1,93 @@
+{% extends 'registro/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Sistema de Registro{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/style_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-card">
+        <h2 class="dashboard-title">
+            Bem-vindo, {{ user.first_name|default:user.username }}!
+        </h2>
+
+        {% if funcionario %}
+            <div class="info-section">
+                <div class="section-header">
+                    <h3 class="section-title">Informações do Funcionário</h3>
+                </div>
+                <div class="section-content">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <p class="info-label">Nome</p>
+                            <p class="info-value">{{ funcionario.nome }}</p>
+                        </div>
+                        
+                        <div class="info-item">
+                            <p class="info-label">CPF</p>
+                            <p class="info-value">{{ funcionario.cpf }}</p>
+                        </div>
+                        
+                        <div class="info-item">
+                            <p class="info-label">Nível de Acesso</p>
+                            <p class="info-value">
+                            {% if funcionario.nivel_acesso == 1 %}
+                                🟢 Nível 1: Acesso concedido a indivíduos com permissão geral.
+                                
+                            {% elif funcionario.nivel_acesso == 2 %}
+                                🟡 Nível 2: Acesso restrito aos diretores de divisões específicas.
+                                
+                            {% elif funcionario.nivel_acesso == 3 %}
+                                🔴 Nível 3: Acesso exclusivo ao ministro do Meio Ambiente.
+                                
+                            {% endif %}
+                        </p>
+                        </div>
+                        
+                        <div class="info-item">
+                            <p class="info-label">Divisão</p>
+                            <p class="info-value">{{ funcionario.divisao|default:"Não informado" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if face_data and face_data.image %}
+            <div class="facial-data-section">
+                <div class="section-header">
+                    <h3 class="section-title">Dados de Reconhecimento Facial</h3>
+                </div>
+                <div class="section-content">
+                    <div class="facial-data-content">
+                        <img src="{{ face_data.image.url }}" alt="Foto de {{ funcionario.nome }}" class="facial-data-img">
+                        <div class="facial-data-details">
+                            <p class="info-label">Números do Algoritmo (Encoding)</p>
+                            <p class="encoding-block">
+                                {{ face_data.encoding }}
+                            </p>
+                        </div>
+                    </div>
+
+                <div class="dashboard-alert">
+                    {# Ícone de informação #}
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    <p>Você está logado no sistema de reconhecimento facial do Ministério do Meio Ambiente.</p>
+                </div>
+                </div>
+            </div>
+        {% else %}
+            <p class="alert alert-info">Nenhum dado de reconhecimento facial encontrado para este usuário.</p>
+        {% endif %}
+
+        <div class="logout-group">
+            <a href="{% url 'logout' %}" class="btn btn-primary logout-btn">
+                Fazer Logout
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends 'registro/base.html' %}
+{% load static %}
+
+{% block title %}Login - Sistema de Registro{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <!-- COLUNA ESQUERDA: Login com Usuário e Senha -->
+    <div class="login-column">
+        <h3 class="column-title">Login com Credenciais</h3>
+
+        {% if error %}
+            <div class="alert alert-error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Usuário</label>
+                <input type="text" id="username" name="username" placeholder="Digite seu usuário" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
+            </div>
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+            </div>
+        </form>
+
+        <div class="link-center">
+            <p>Não tem uma conta? <a href="{% url 'cadastro' %}">Cadastre-se</a></p>
+        </div>
+    </div>
+
+    <!-- COLUNA DIREITA: Login com Reconhecimento Facial -->
+    <div class="facial-column">
+        <h3 class="column-title">Reconhecimento Facial</h3>
+
+        <div class="camera-container">
+            <video id="camera" autoplay playsinline></video>
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <div class="button-group-horizontal" style="margin-bottom: 20px;">
+            <button type="button" class="btn btn-primary" onclick="startCamera()">Iniciar Câmera</button>
+            <button type="button" class="btn btn-secondary" onclick="captureAndRecognize()">Capturar</button>
+        </div>
+
+        <div id="recognition-status" class="recognition-status hidden">
+            <p id="status-message" class="status-message"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const csrfToken = "{{ csrf_token }}";
+    const reconhecerRostoUrl = "{% url 'reconhecer_rosto' %}";
+    const dashboardUrl = "{% url 'dashboard' %}";
+
+    const video = document.getElementById('camera');
+    const canvas = document.getElementById('canvas');
+    const statusMessage = document.getElementById('status-message');
+    const recognitionStatus = document.getElementById('recognition-status');
+    let stream;
+
+    async function startCamera() {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = stream;
+            statusMessage.textContent = 'Câmera iniciada. Posicione seu rosto.';
+            recognitionStatus.classList.remove('hidden');
+        } catch (err) {
+            console.error("Erro ao acessar a câmera: ", err);
+            statusMessage.textContent = 'Erro ao acessar a câmera. Verifique as permissões.';
+            recognitionStatus.classList.remove('hidden');
+        }
+    }
+
+    function stopCamera() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            video.srcObject = null;
+            statusMessage.textContent = 'Câmera parada.';
+        }
+    }
+
+    async function captureAndRecognize() {
+        if (!stream) {
+            statusMessage.textContent = 'Inicie a câmera primeiro.';
+            recognitionStatus.classList.remove('hidden');
+            return;
+        }
+
+        statusMessage.textContent = 'Processando...';
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        const imageDataUrl = canvas.toDataURL('image/jpeg');
+
+        try {
+            const response = await fetch(reconhecerRostoUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ image: imageDataUrl })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                statusMessage.textContent = `Bem-vindo, ${result.user}! Redirecionando...`;
+                // Redireciona para o dashboard após um pequeno atraso
+                setTimeout(() => {
+                    window.location.href = dashboardUrl;
+                }, 1500);
+            } else {
+                statusMessage.textContent = result.message || 'Rosto não reconhecido. Tente novamente.';
+            }
+        } catch (error) {
+            console.error('Erro na requisição:', error);
+            statusMessage.textContent = 'Erro de comunicação com o servidor.';
+        }
+    }
+
+    // Garante que a câmera seja parada se o usuário sair da página
+    window.addEventListener('beforeunload', stopCamera);
+</script>
+{% endblock %}
