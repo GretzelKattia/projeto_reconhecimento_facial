@@ -1,12 +1,12 @@
 # Sistema de Registro e Login com Reconhecimento Facial
 
-Este é um sistema web desenvolvido em Django que permite o registro de funcionários e oferece duas formas de autenticação:
+Este é um sistema web desenvolvido em Django que permite o registro de funcionários e oferece dois métodos de autenticação:
 1.  **Login Tradicional:** Utilizando nome de usuário e senha.
 2.  **Login Facial:** Utilizando a webcam para reconhecimento facial em tempo real.
 
 ## Visão Geral
 
-O projeto foi criado para explorar as capacidades da biblioteca `face_recognition` em um ambiente web com Django. Ele demonstra um fluxo completo:
+O projeto demonstra um fluxo completo de autenticação biométrica em um ambiente web:
 
 -   **Cadastro:** O usuário preenche seus dados (nome, CPF, etc.) e envia uma foto de seu rosto. O sistema processa essa foto para extrair uma "assinatura facial" (um vetor de 128 números, conhecido como *encoding*), que é armazenada no banco de dados.
 -   **Autenticação:** Na tela de login, o usuário pode optar por usar a câmera. Ao capturar uma imagem, o sistema gera um novo *encoding* e o compara com todos os *encodings* armazenados. Se uma correspondência for encontrada com um grau de similaridade aceitável, o login é efetuado.
@@ -23,14 +23,14 @@ O projeto foi criado para explorar as capacidades da biblioteca `face_recognitio
 
 ## Como Funciona
 
-1.  **Geração do Encoding Facial:** Durante o cadastro, a imagem enviada é processada pela função `face_recognition.face_encodings()`. Ela localiza o rosto na imagem e gera um vetor numérico que o representa de forma única. Esse vetor é convertido para uma string JSON e salvo no banco de dados.
-2.  **Comparação de Rostos:** Durante o login facial, a função `face_recognition.compare_faces()` é usada. Ela recebe uma lista de *encodings* conhecidos (do banco de dados) e o *encoding* do rosto capturado pela webcam. A função retorna `True` para os rostos que correspondem, com base em um limiar de tolerância (distância euclidiana).
-3.  **Integração Django:** As views do Django (`cadastro_view`, `reconhecer_rosto`) orquestram todo o processo, desde receber os dados do formulário e da câmera até interagir com o banco de dados e autenticar o usuário com o sistema de sessões do Django.
+1.  **Geração da Assinatura Facial (Encoding):** Durante o cadastro, a imagem enviada é processada pela função `face_recognition.face_encodings()`. Ela localiza o rosto na imagem e gera um vetor numérico que o representa de forma única. Esse vetor é convertido para uma string JSON e salvo no banco de dados, associado ao funcionário.
+2.  **Comparação de Rostos:** Durante o login facial, a função `face_recognition.compare_faces()` é usada. Ela recebe uma lista de *encodings* conhecidos (buscados do banco de dados) e o *encoding* do rosto capturado pela webcam. A função retorna `True` para os rostos que correspondem, com base em um limiar de tolerância (`tolerance=0.5`).
+3.  **Integração Django:** As views do Django (`cadastro_view`, `reconhecer_rosto`) orquestram todo o processo, desde receber os dados do formulário e da câmera até interagir com o banco de dados e autenticar o usuário com o sistema de sessões nativo do Django.
 ## Configuração do Ambiente
 
 ### Pré-requisito: Instalar o Miniconda
 
-Antes de começar, você precisa ter o **Miniconda** instalado em sua máquina.
+Antes de começar, é essencial ter o **Miniconda** instalado.
 
 **Por que usar Miniconda/Conda?**
 Este projeto utiliza a biblioteca `dlib` para o reconhecimento facial, que possui dependências complexas (C++) difíceis de instalar com o `pip` padrão do Python. O `conda` é um gerenciador de pacotes e ambientes que instala versões pré-compiladas dessas bibliotecas, tornando a configuração simples e livre de erros.
@@ -39,9 +39,14 @@ Este projeto utiliza a biblioteca `dlib` para o reconhecimento facial, que possu
 
 Após a instalação, você poderá usar os comandos `conda` no seu terminal.
 
-### 1. Criar e Ativar o Ambiente Conda
+### Passo 1: Criar e Ativar o Ambiente Conda
 
-Primeiro, crie um ambiente Conda com Python 3.9:
+Primeiro, ativar um ambiente Conda:
+```bash
+conda CAMINHO_PARA_MINICONDA/miniconda3/Scripts/activate base
+```
+
+Depois, crie um ambiente Conda com Python 3.9:
 ```bash
 conda create -n homologado39 python=3.9
 ```
@@ -224,4 +229,3 @@ projeto_reconhecimento_facial/
 └── media/                  # Arquivos enviados
     └── faces/             # Fotos dos funcionários
 ```
-
