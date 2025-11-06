@@ -6,9 +6,9 @@ from django.utils.text import slugify
 class Funcionario(models.Model):
     """Modelo para armazenar dados dos funcionários"""
     NIVEL_CHOICES = [
-        (1, 'Nível 1'),
-        (2, 'Nível 2'),
-        (3, 'Nível 3'),
+        (1, 'Nível 1: Acesso Geral'),
+        (2, 'Nível 2: Acesso restrito para Diretor'),
+        (3, 'Nível 3: Acesso exclusivo para Ministro'),
     ]
     
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='funcionario')

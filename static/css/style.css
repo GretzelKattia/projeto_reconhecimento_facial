@@ -192,7 +192,6 @@ textarea:focus {
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(45, 122, 62, 0.3);
 }
 
@@ -201,10 +200,22 @@ textarea:focus {
     color: var(--white);
 }
 
+/* Regra de hover para TODOS os botões secundários */
 .btn-secondary:hover {
-    background: var(--primary-green);
-    transform: translateY(-2px);
+    background: var(--dark-green);
+    color: var(--white) !important;
+    text-decoration: none;
 }
+
+.btn-success {
+    color: var(--dark-green);
+}
+/* Regra específica para links que são botões de sucesso */
+a.btn-success:hover {
+    color: var(--dark-green);
+    text-decoration: underline;
+}
+
 
 .btn-block {
     width: 100%;
@@ -305,7 +316,7 @@ a {
 }
 
 a:hover {
-    color: var(--dark-green);
+    color: var(--white);
     text-decoration: underline;
 }
 

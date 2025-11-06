@@ -9,15 +9,14 @@ import base64
 from django.db import transaction
 import cv2
 import numpy as np
-from django.db import models
-from PIL import Image # Importe a biblioteca Pillow
+from PIL import Image
 import face_recognition
 import json
+import os
 
 def login_view(request):
     """Página de login com usuário/senha e reconhecimento facial."""
     if request.method == 'POST':
-        # Lógica de login com usuário e senha
         data = request.POST
         username = data.get('username')
         password = data.get('password')
@@ -34,17 +33,26 @@ def dashboard(request):
     """Dashboard do usuário após o login."""
     try:
         funcionario = request.user.funcionario
-        # Tenta buscar os dados da face associados ao funcionário
         face_data = ColetaDeFaces.objects.get(funcionario=funcionario)
     except Funcionario.DoesNotExist:
         funcionario = None
         face_data = None
     except ColetaDeFaces.DoesNotExist:
         face_data = None
-        
+
+    # Calcular tamanho da imagem em MB
+    mb_image = None
+    if face_data and face_data.image:
+        path = face_data.image.path
+        if os.path.exists(path):
+            size_bytes = os.path.getsize(path)
+            size_mb = size_bytes / (1024 * 1024)
+            mb_image = round(size_mb, 2)  # duas casas decimais
+
     return render(request, 'registro/dashboard.html', {
-        'funcionario': funcionario, 
-        'face_data': face_data
+        'funcionario': funcionario,
+        'face_data': face_data,
+        'mb_image': mb_image,
     })
 
 @login_required
@@ -62,7 +70,6 @@ def reconhecer_rosto(request):
             image_np = np.frombuffer(image_bytes, dtype=np.uint8)
             img = cv2.imdecode(image_np, cv2.IMREAD_COLOR)
 
-            # 1. Encontrar o rosto na imagem da webcam e gerar o encoding
             rgb_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             encodings_rosto_atual = face_recognition.face_encodings(rgb_img)
 
@@ -70,23 +77,18 @@ def reconhecer_rosto(request):
                 return JsonResponse({'success': False, 'message': 'Nenhum rosto detectado na captura.'})
 
             encoding_rosto_atual = encodings_rosto_atual[0]
-
-            # 2. Buscar todos os rostos conhecidos do banco de dados
             faces_conhecidas = ColetaDeFaces.objects.all()
             if not faces_conhecidas.exists():
                 return JsonResponse({'success': False, 'message': 'Nenhum rosto cadastrado no sistema.'})
 
             encodings_conhecidos = [json.loads(face.encoding) for face in faces_conhecidas]
-            
-            # 3. Comparar o rosto da webcam com os rostos conhecidos
             matches = face_recognition.compare_faces(encodings_conhecidos, encoding_rosto_atual, tolerance=0.5)
 
             if True in matches:
                 first_match_index = matches.index(True)
                 face_encontrada = faces_conhecidas[first_match_index]
                 user = face_encontrada.funcionario.user
-                
-                login(request, user) # Faz o login do usuário
+                login(request, user)
                 return JsonResponse({'success': True, 'user': user.username})
 
             return JsonResponse({'success': False, 'message': 'Rosto não reconhecido.'})
@@ -94,8 +96,6 @@ def reconhecer_rosto(request):
             return JsonResponse({'success': False, 'message': f'Erro no servidor: {str(e)}'})
 
     return JsonResponse({'success': False, 'message': 'Método inválido'})
-
-# registro/views.py
 
 @transaction.atomic
 def cadastro_view(request):
@@ -109,31 +109,26 @@ def cadastro_view(request):
             'coleta_form': coleta_form
         })
 
-    # Se o método for POST, o código abaixo será executado
     user_form = UserForm(request.POST)
     funcionario_form = FuncionarioForm(request.POST)
     coleta_form = ColetaDeFacesForm(request.POST, request.FILES)
 
     if user_form.is_valid() and funcionario_form.is_valid() and coleta_form.is_valid():
-        # 1. Criar o usuário
         username = user_form.cleaned_data['username']
         password = user_form.cleaned_data['password']
         user = User.objects.create_user(username=username, password=password)
 
-        # 2. Criar o funcionário e associar ao usuário
         funcionario = funcionario_form.save(commit=False)
         funcionario.user = user
         funcionario.save()
 
-        # 3. Processar a imagem e salvar a coleta de face
         coleta = ColetaDeFaces(funcionario=funcionario)
         coleta.image = coleta_form.cleaned_data['image']
 
         try:
-            # Abre a imagem com Pillow e converte para RGB
             img_pil = Image.open(coleta.image)
             img_rgb = img_pil.convert('RGB')
-            imagem_carregada = np.array(img_rgb) # Converte para o formato que face_recognition usa
+            imagem_carregada = np.array(img_rgb)
             encodings = face_recognition.face_encodings(imagem_carregada)
 
             if encodings:

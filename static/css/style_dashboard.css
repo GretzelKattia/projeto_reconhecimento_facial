@@ -77,10 +77,8 @@
     font-size: 16px;
 }
 
-.facial-data-title {
-    /* Estilos agora são controlados por .section-title */
-}
-
+/* .facial-data-title {
+    Estilos agora são controlados por .section-title }*/
 .facial-data-content {
     display: flex;
     align-items: center;
@@ -109,14 +107,12 @@
     max-height: 100px;
     overflow-y: auto;
 
-    /* Esconde a barra de rolagem no Firefox */
+    /* Esconde a barra de rolagem */
     scrollbar-width: none;
-
-    /* Esconde a barra de rolagem no Internet Explorer e Edge (versões mais antigas) */
     -ms-overflow-style: none;
 }
 
-/* Esconde a barra de rolagem no Chrome, Safari e outros navegadores WebKit */
+/* Esconde a barra de rolagem*/
 .encoding-block::-webkit-scrollbar {
     display: none;
 }
@@ -130,6 +126,7 @@
 .logout-btn {
     flex: 1;
     text-align: center;
+    color: var(--white) !important;
 }
 
 .dashboard-alert {

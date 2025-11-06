@@ -27,10 +27,6 @@
                 <button type="submit" class="btn btn-primary btn-block">Entrar</button>
             </div>
         </form>
-
-        <div class="link-center">
-            <p>Não tem uma conta? <a href="{% url 'cadastro' %}">Cadastre-se</a></p>
-        </div>
     </div>
 
     <!-- COLUNA DIREITA: Login com Reconhecimento Facial -->
@@ -91,8 +87,23 @@
             recognitionStatus.classList.remove('hidden');
             return;
         }
+        
+        // Inicia o contador regressivo
+        let countdown = 3;
+        statusMessage.textContent = `Olhe para a câmera... ${countdown}`;
+        
+        const countdownInterval = setInterval(() => {
+            countdown--;
+            statusMessage.textContent = `Olhe para a câmera... ${countdown}`;
+            if (countdown <= 0) {
+                clearInterval(countdownInterval);
+                statusMessage.textContent = 'Capturando...';
+                sendFrameToServer();
+            }
+        }, 1000);
+    }
 
-        statusMessage.textContent = 'Processando...';
+    async function sendFrameToServer() {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);

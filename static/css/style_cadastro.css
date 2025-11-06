@@ -1,0 +1,48 @@
+/* =============================================
+   ESTILOS ESPECÍFICOS DA PÁGINA DE CADASTRO
+   ============================================ */
+
+input[type="file"] {
+    display: none;
+}
+
+.drop-zone {
+    border: 2px dashed #ccc;
+    border-radius: var(--border-radius);
+    padding: 25px;
+    text-align: center;
+    color: #555;
+    transition: border-color 0.3s, background-color 0.3s;
+    cursor: pointer;
+}
+
+.drop-zone.dragover {
+    border-color: var(--primary-green);
+    background-color: #f0f8ff;
+}
+
+.drop-zone-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.file-name-display {
+    font-size: 14px;
+    color: #555;
+    margin-top: 15px;
+    display: block;
+}
+
+.form-error {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Estilo extra para o hover do botão de upload */
+#drop-zone .btn-secondary:hover {
+    background-color: var(--dark-green);
+    color: var(--white);
+}

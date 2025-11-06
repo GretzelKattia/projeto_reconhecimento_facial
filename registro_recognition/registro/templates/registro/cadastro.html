@@ -18,11 +18,38 @@
         <h3 class="form-section-title">Dados Pessoais</h3>
         {{ funcionario_form.as_p }}
 
-        <h3 class="form-section-title">Reconhecimento Facial</h3>
-        {{ coleta_form.as_p }}
-        <!-- <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M19 7v2.99s-1.99.01-2 0V7h-3s.01-1.99 0-2h3V2h2v3h3v2h-3zm-3 4V8h-3V5H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8h-3zM5 19l3-4 2 3 3-4 4 5H5z"/>
-        </svg> -->
+        <h3 class="form-section-title">Reconhecimento Facial</h3>    
+        
+        {# Bloco customizado para o upload de arquivo #}
+        <div class="form-group">
+            <label for="{{ coleta_form.image.id_for_label }}">{{ coleta_form.image.label }}</label>
+            
+            {# O input original fica escondido #}
+            {{ coleta_form.image }}
+
+            {# Nossa nova zona de arrastar e soltar #}
+            <div id="drop-zone" class="drop-zone">
+                <div class="drop-zone-text">
+                    <div class="upload-instructions">
+                        <p><strong>Para um reconhecimento preciso, use uma foto com:</strong></p>
+                        <!-- <ul>
+                            ✔️ Rosto olhando para frente <br>
+                            ✔️ Boa iluminação, sem sombras <br>
+                            ✔️ Sem óculos escuros ou chapéu
+                        </ul> -->
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="60" height="60" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                    <label for="{{ coleta_form.image.id_for_label }}" class="btn btn-secondary">
+                        <span>Escolha um arquivo</span>
+                    </label>
+                </div>
+                <span id="file-name-display" class="file-name-display">Nenhum arquivo escolhido</span>
+            </div>
+
+            {% if coleta_form.image.errors %}
+                <div class="form-error">{{ coleta_form.image.errors|striptags }}</div>
+            {% endif %}
+        </div>
 
         <div class="button-group">
             <button type="submit" class="btn btn-primary btn-block">
@@ -34,4 +61,56 @@
         </div>
     </form>
 </div>
+
+{% block extra_css %}
+    {# Carrega o arquivo de estilo específico para a página de cadastro #}
+    <link rel="stylesheet" href="{% static 'css/style_cadastro.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const fileInput = document.getElementById('{{ coleta_form.image.id_for_label }}');
+    const dropZone = document.getElementById('drop-zone');
+    const fileNameDisplay = document.getElementById('file-name-display');
+
+    // Função para atualizar o nome do arquivo exibido
+    function updateFileName(file) {
+        if (file) {
+            fileNameDisplay.textContent = file.name;
+        } else {
+            fileNameDisplay.textContent = 'Nenhum arquivo escolhido';
+        }
+    }
+
+    // Atualiza o nome do arquivo quando selecionado pelo botão
+    fileInput.addEventListener('change', function(event) {
+        updateFileName(event.target.files[0]);
+    });
+
+    // Eventos de Drag and Drop
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    dropZone.addEventListener('dragover', (event) => {
+        event.preventDefault(); // Previne o comportamento padrão do navegador
+        dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (event) => {
+        event.preventDefault(); // Previne o comportamento padrão do navegador
+        dropZone.classList.remove('dragover');
+
+        const fileNameDisplay = document.getElementById('file-name-display');
+        const files = event.dataTransfer.files;
+
+        if (files.length > 0) {
+            fileInput.files = files; // Associa o arquivo arrastado ao input
+            updateFileName(files[0]);
+        }
+    });
+</script>
+{% endblock %}
 {% endblock %}

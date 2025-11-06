@@ -35,13 +35,13 @@
                             <p class="info-label">Nível de Acesso</p>
                             <p class="info-value">
                             {% if funcionario.nivel_acesso == 1 %}
-                                🟢 Nível 1: Acesso concedido a indivíduos com permissão geral.
+                                🟢 Nível 1: Geral
                                 
                             {% elif funcionario.nivel_acesso == 2 %}
-                                🟡 Nível 2: Acesso restrito aos diretores de divisões específicas.
+                                🟡 Nível 2: Diretor
                                 
                             {% elif funcionario.nivel_acesso == 3 %}
-                                🔴 Nível 3: Acesso exclusivo ao ministro do Meio Ambiente.
+                                🔴 Nível 3: Ministro
                                 
                             {% endif %}
                         </p>
@@ -50,6 +50,16 @@
                         <div class="info-item">
                             <p class="info-label">Divisão</p>
                             <p class="info-value">{{ funcionario.divisao|default:"Não informado" }}</p>
+                        </div>
+                        <div class="info-item">
+                            <p class="info-label">MB da imagem</p>
+                            <p class="info-value">
+                                {% if mb_image %}
+                                    {{ mb_image }} MB
+                                {% else %}
+                                    Nenhuma imagem cadastrada
+                                {% endif %}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -84,7 +94,12 @@
         {% endif %}
 
         <div class="logout-group">
-            <a href="{% url 'logout' %}" class="btn btn-primary logout-btn">
+            {% if funcionario.nivel_acesso == 3 %}
+                {# Botão de ação para administradores, ao lado do logout #}
+                <a href="{% url 'cadastro' %}" class="btn btn-success">Cadastrar Funcionário</a>
+            {% endif %}
+            <a href="{% url 'logout' %}" class="btn btn-secondary logout-btn">
+
                 Fazer Logout
             </a>
         </div>
