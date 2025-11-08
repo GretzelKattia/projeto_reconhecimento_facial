@@ -10,7 +10,6 @@
 </head>
 <body>
 
-    <!-- Decoração com folhas -->
     <div class="leaf-decoration leaf-top-right"></div>
     <div class="leaf-decoration leaf-bottom-left"></div>
 
@@ -21,7 +20,6 @@
         </div>
     </header>
 
-    <!-- CONTEÚDO PRINCIPAL -->
     <main class="container">
         {% if messages %}
             {% for message in messages %}
@@ -31,7 +29,6 @@
             {% endfor %}
         {% endif %}
 
-        <!-- 🔹 SOMENTE UM BLOCK CONTENT AQUI -->
         {% block content %}{% endblock %}
     </main>
 

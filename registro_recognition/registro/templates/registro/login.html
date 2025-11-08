@@ -5,7 +5,6 @@
 
 {% block content %}
 <div class="login-container">
-    <!-- COLUNA ESQUERDA: Login com Usuário e Senha -->
     <div class="login-column">
         <h3 class="column-title">Login com Credenciais</h3>
 
@@ -29,7 +28,6 @@
         </form>
     </div>
 
-    <!-- COLUNA DIREITA: Login com Reconhecimento Facial -->
     <div class="facial-column">
         <h3 class="column-title">Reconhecimento Facial</h3>
 
@@ -88,7 +86,7 @@
             return;
         }
         
-        // Inicia o contador regressivo
+        // Contador regressivo
         let countdown = 3;
         statusMessage.textContent = `Olhe para a câmera... ${countdown}`;
         
@@ -124,7 +122,6 @@
 
             if (result.success) {
                 statusMessage.textContent = `Bem-vindo, ${result.user}! Redirecionando...`;
-                // Redireciona para o dashboard após um pequeno atraso
                 setTimeout(() => {
                     window.location.href = dashboardUrl;
                 }, 1500);
@@ -137,7 +134,6 @@
         }
     }
 
-    // Garante que a câmera seja parada se o usuário sair da página
     window.addEventListener('beforeunload', stopCamera);
 </script>
 {% endblock %}

@@ -47,7 +47,7 @@ def dashboard(request):
         if os.path.exists(path):
             size_bytes = os.path.getsize(path)
             size_mb = size_bytes / (1024 * 1024)
-            mb_image = round(size_mb, 2)  # duas casas decimais
+            mb_image = round(size_mb, 2)
 
     return render(request, 'registro/dashboard.html', {
         'funcionario': funcionario,

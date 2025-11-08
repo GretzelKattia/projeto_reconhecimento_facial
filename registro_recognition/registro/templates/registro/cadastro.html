@@ -82,16 +82,14 @@
         }
     }
 
-    // Atualiza o nome do arquivo quando selecionado pelo botão
     fileInput.addEventListener('change', function(event) {
         updateFileName(event.target.files[0]);
     });
 
-    // Eventos de Drag and Drop
     dropZone.addEventListener('click', () => fileInput.click());
 
     dropZone.addEventListener('dragover', (event) => {
-        event.preventDefault(); // Previne o comportamento padrão do navegador
+        event.preventDefault();
         dropZone.classList.add('dragover');
     });
 
@@ -100,14 +98,14 @@
     });
 
     dropZone.addEventListener('drop', (event) => {
-        event.preventDefault(); // Previne o comportamento padrão do navegador
+        event.preventDefault();
         dropZone.classList.remove('dragover');
 
         const fileNameDisplay = document.getElementById('file-name-display');
         const files = event.dataTransfer.files;
 
         if (files.length > 0) {
-            fileInput.files = files; // Associa o arquivo arrastado ao input
+            fileInput.files = files;
             updateFileName(files[0]);
         }
     });
