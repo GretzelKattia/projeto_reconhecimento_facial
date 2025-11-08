@@ -51,16 +51,18 @@
                             <p class="info-label">Divisão</p>
                             <p class="info-value">{{ funcionario.divisao|default:"Não informado" }}</p>
                         </div>
-                        <div class="info-item">
-                            <p class="info-label">MB da imagem</p>
-                            <p class="info-value">
-                                {% if mb_image %}
-                                    {{ mb_image }} MB
-                                {% else %}
-                                    Nenhuma imagem cadastrada
-                                {% endif %}
-                            </p>
-                        </div>
+                        {% if funcionario.nivel_acesso != 1 %}
+                            <div class="info-item">
+                                <p class="info-label">MB da imagem</p>
+                                <p class="info-value">
+                                    {% if mb_image %}
+                                        {{ mb_image }} MB
+                                    {% else %}
+                                        Nenhuma imagem cadastrada
+                                    {% endif %}
+                                </p>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
